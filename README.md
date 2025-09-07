@@ -1,6 +1,6 @@
-# Link Unlocker
+# Link Unlocker - Filecrypt
 
-Link Unlocker is a Tampermonkey userscript that makes dealing with FileCrypt containers much easier.  
+Link Unlocker is a Tampermonkey userscript that makes dealing with Filecrypt containers much easier.  
 Instead of clicking every single download button, it collects all the links for you and shows them in one simple box with a copy button.
 
 It uses a small Node.js proxy server to decrypt .dlc files via [dcrypt.it](https://dcrypt.it/), because browsers can’t upload files directly to their API due to CORS restrictions.  
@@ -12,18 +12,12 @@ You can keep it running with pm2 or any other process manager.
 
 ## Features
 
--   Instantly detect FileCrypt DLC containers
+-   Instantly detect Filecrypt DLC containers
 -   Decrypts and fetches all links inside a DLC file
 -   Copy all links to clipboard with a single click
 -   Modern, colorful UI
 -   Automatically removes annoying banners
 -   Starts early (document-start) and uses a mutation observer for speed
-
----
-
-## Demo
-
-After installing the userscript (script.user.js) with a , visit a FileCrypt container page. The "Link Unlocker" box will appear automatically, showing all links with a copy button.
 
 ---
 

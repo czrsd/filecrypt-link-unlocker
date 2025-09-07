@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Link Unlocker
+// @name         Filecrypt Link Unlocker
 // @namespace    https://github.com/czrsd/filecrypt-link-unlocker
 // @version      1.0.0
-// @description  Display all links from FileCrypt
+// @description  Display all links from a Filecrypt container
 // @author       Cursed
 // @match        https://*.filecrypt.cc/Container/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=filecrypt.cc
