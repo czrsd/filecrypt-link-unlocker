@@ -42,7 +42,7 @@ After installing the userscript (script.user.js) with a , visit a FileCrypt cont
 2. Install dependencies:
 
 ```bash
-npm install express cors multer
+npm install
 ```
 
 3. Run the server:
