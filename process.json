@@ -1,0 +1,10 @@
+{
+    "apps": [
+        {
+            "name": "Filecrypt Link Unlocker",
+            "script": "/var/www/filecrypt.czrsd.com/server.js",
+            "cwd": "/var/www/filecrypt.czrsd.com/",
+            "namespace": "GitHub"
+        }
+    ]
+}
