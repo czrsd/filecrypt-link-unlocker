@@ -2,8 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import https from 'https';
+import validateInput from './utils/validation.js';
+import decryptDLC from './utils/decrypt.js';
 
 const app = express();
+
+app.set('trust proxy', 1);
 
 app.use(
     cors({
@@ -22,36 +26,19 @@ app.get('/', (_, res) => {
     res.send('success.');
 });
 
-app.post('/upload-dlc', upload.single('dlcfile'), async (req, res) => {
-    const dlcBuffer = req.file.buffer;
-
-    const formData = new FormData();
-    formData.append('dlcfile', new Blob([dlcBuffer]), 'file.dlc');
-
-    const response = await fetch('https://dcrypt.it/decrypt/upload', {
-        method: 'POST',
-        body: formData,
-        agent
-    });
-
-    const text = await response.text();
-
-    const match = text.match(/<textarea[^>]*>([\s\S]*?)<\/textarea>/i);
-    if (!match) return res.status(500).send({ error: 'No textarea found' });
-
-    let json;
+app.post(
+  '/upload-dlc',
+  upload.fields([{ name: 'dlcfile' }, { name: 'link' }, { name: 'name' }, { name: 'size' }, { name: 'referrer' }]),
+  async (req, res) => {
     try {
-        json = JSON.parse(match[1]);
-    } catch (e) {
-        return res.status(500).send({ error: 'Invalid JSON in textarea' });
+      const { dlcBuffer, link, name, size, referrer } = await validateInput(req);
+      const links = await decryptDLC(dlcBuffer, agent);
+
+      res.json({ status: 'success', links, link, name, size, referrer });
+    } catch (err) {
+      res.status(400).json({ status: 'failed', message: err.message });
     }
-
-    const links = json?.success?.links ?? [];
-
-    res.json({
-        status: 'success',
-        links: links,
-    });
-});
+  }
+)
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
