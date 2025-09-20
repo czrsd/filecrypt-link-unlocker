@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Filecrypt Link Unlocker
 // @namespace    https://github.com/czrsd/filecrypt-link-unlocker
-// @version      1.0.1
+// @version      1.0.2
 // @description  Display all links from a Filecrypt container
 // @author       Cursed
 // @match        https://*.filecrypt.cc/Container/*
@@ -101,19 +101,7 @@
         btnsDiv.insertAdjacentElement('afterend', container);
 
         const copyBtn = document.querySelector('#cz_copy');
-        copyBtn.addEventListener('click', () => {
-            const links = Array.from(
-                document.querySelectorAll('#cz_links a')
-            ).map((a) => a.href);
-            if (links.length) navigator.clipboard.writeText(links.join('\n'));
 
-            // visual feedback
-            copyBtn.style.border = '2px solid #9CF7A3';
-            setTimeout(
-                () => (copyBtn.style.border = '2px solid transparent'),
-                1500
-            );
-        });
         copyBtn.onmouseenter = _ => (copyBtn.style.scale = '1.03');
         copyBtn.onmouseleave = _ => (copyBtn.style.scale = '1');
 
@@ -147,6 +135,17 @@
                 Total size: ${size}
                 Download from: ${refDomain}
             `.trim();
+
+            copyBtn.addEventListener('click', () => {
+                if (json.links.length) navigator.clipboard.writeText(json.links.join('\n'));
+
+                // visual feedback
+                copyBtn.style.border = '2px solid #9CF7A3';
+                setTimeout(
+                    () => (copyBtn.style.border = '2px solid transparent'),
+                    1500
+                );
+            });
 
             linksDiv.innerHTML = '';
             json.links.forEach(link => {
