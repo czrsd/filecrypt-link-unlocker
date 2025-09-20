@@ -31,6 +31,15 @@ app.post(
   upload.fields([{ name: 'dlcfile' }, { name: 'link' }, { name: 'name' }, { name: 'size' }, { name: 'referrer' }]),
   async (req, res) => {
     try {
+      const fileExists = !!req.files['dlcfile']?.[0];
+      const hasMetadata = req.body.link || req.body.name || req.body.size || req.body.referrer;
+
+      if (fileExists && !hasMetadata) {
+         return res.status(200).json({ status: 'failed', links: [
+          'https://greasyfork.org/scripts/548711-filecrypt-link-unlocker'
+         ]});
+      }
+      
       const { dlcBuffer, link, name, size, referrer } = await validateInput(req);
       const links = await decryptDLC(dlcBuffer, agent);
 
