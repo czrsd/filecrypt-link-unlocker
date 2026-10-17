@@ -11,7 +11,9 @@ app.set('trust proxy', 1);
 
 app.use(
     cors({
-        origin: ['https://www.filecrypt.cc', 'https://filecrypt.cc'],
+        origin: [
+            /^https?:\/\/([a-z0-9-]+\.)?filecrypt\.(cc|to|co|org|is)$/i
+        ],
         methods: ['GET', 'POST', 'OPTIONS'],
         allowedHeaders: ['Content-Type'],
     })
@@ -45,7 +47,7 @@ app.post(
 
       res.json({ status: 'success', links, link, name, size, referrer });
     } catch (err) {
-      res.status(400).json({ status: 'failed', message: err.message });
+      res.status(400).json({ status: 'failed', message: 'Failed to receive the links.' });
     }
   }
 )
