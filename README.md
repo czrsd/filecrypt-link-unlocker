@@ -1,5 +1,7 @@
 # FileCrypt Auto-Bypass & Decrypter (Link Extractor)
 
+[FileCrypt Link Unlocker website, installation, and troubleshooting](https://filecrypt.czrsd.com/)
+
 ## How It Works
 
 The script uses a lightweight Node.js proxy server to decrypt `.dlc` files via the [dcrypt.it](https://dcrypt.it/) API. Because web browsers block direct file uploads to third-party APIs due to CORS restrictions, the proxy handles the `.dlc` upload and returns the decrypted raw links back to the userscript.
@@ -16,7 +18,7 @@ You can use the default public proxy configured in the script, or self-host your
 * **Optimized Dark Mode UI:** Displays links in a modern, scrollable container so massive download packs do not stretch or break the page layout.
 * **Instant Session Caching:** Extracted links are cached in the session storage, meaning page refreshes load the links immediately with zero delay.
 * **Ad Removal:** Actively targets and removes dynamic ad banners (such as Rapidgator promotions) and unnecessary site branding for a distraction-free view.
-* **Multi-Language Integration:** Fully localized metadata for accurate international search indexing.
+* **Translated Listings:** Includes translated userscript names and descriptions.
 
 ## Supported Filehosters
 
