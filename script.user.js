@@ -7,7 +7,7 @@
 // @name:ru              FileCrypt Авто-обход и дешифратор (Экстрактор ссылок) [2026]
 // @name:zh-CN           FileCrypt 自动绕过与解密器 (链接提取器) [2026]
 // @namespace            https://github.com/czrsd/filecrypt-link-unlocker
-// @version              1.1.0
+// @version              1.1.1
 // @description          Instantly extracts original download links from Filecrypt via server-side DLC decryption. Features a clean UI, 1-click copy for JDownloader, and ad removal!
 // @description:de       Extrahiert sofort Original-Download-Links von Filecrypt via serverseitiger DLC-Entschlüsselung. Bietet eine saubere UI, 1-Klick-Kopieren für JDownloader und Adblocker!
 // @description:fr       Extrait instantanément les liens de téléchargement originaux de Filecrypt via le décryptage DLC côté serveur. Interface épurée, copie en 1 clic pour JDownloader et suppression des pubs !
@@ -22,7 +22,8 @@
 // @match                https://*.filecrypt.org/Container/*
 // @match                https://*.filecrypt.is/Container/*
 // @icon                 https://czrsd.com/static/filecrypt/filecrypt-link-unlocker.png
-// @grant                none
+// @grant                GM_xmlhttpRequest
+// @connect              filecrypt.czrsd.com
 // @run-at               document-start
 // @license              MIT
 // ==/UserScript==
@@ -33,10 +34,50 @@
     /** @constant {string} Server URL to upload DLC for decryption */
     const UPLOAD_URL = 'https://filecrypt.czrsd.com/upload-dlc';
 
+    function uploadDLC(formData) {
+        return new Promise((resolve, reject) => {
+            if (typeof GM_xmlhttpRequest !== 'function') {
+                reject(new Error('Update or reinstall the userscript to enable cross-origin uploads.'));
+                return;
+            }
+
+            GM_xmlhttpRequest({
+                method: 'POST',
+                url: UPLOAD_URL,
+                data: formData,
+                anonymous: true,
+                timeout: 30000,
+                onload: (response) => {
+                    if (response.status < 200 || response.status >= 300) {
+                        reject(new Error(`Decryption server returned HTTP ${response.status}.`));
+                        return;
+                    }
+                    try {
+                        const json = JSON.parse(response.responseText);
+                        if (
+                            json?.status !== 'success' ||
+                            !Array.isArray(json.links) ||
+                            !json.links.length ||
+                            !json.links.every((link) => typeof link === 'string')
+                        ) {
+                            throw new Error('Decryption server returned no valid links.');
+                        }
+                        resolve(json);
+                    } catch (err) {
+                        reject(err instanceof SyntaxError ? new Error('Decryption server returned invalid JSON.') : err);
+                    }
+                },
+                onerror: () => reject(new Error('Upload failed. Check the connection and userscript domain permission.')),
+                ontimeout: () => reject(new Error('Decryption server timed out. Try reloading the page.')),
+                onabort: () => reject(new Error('Upload was cancelled.')),
+            });
+        });
+    }
+
     // removes all rapidgator / ads banners matching fiIItheadblockqueue*
     const removeBanner = () => {
         const banners = document.querySelectorAll('div[class^="fiIItheadblockqueue"], div[class*=" fiIItheadblockqueue"]');
-        banners.forEach(b => b.remove());
+        banners.forEach((b) => b.remove());
     };
 
     /**
@@ -128,7 +169,7 @@
             border: '1px solid #2d3748',
             boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
             boxSizing: 'border-box',
-            zIndex: 999999
+            zIndex: 999999,
         });
 
         btnsDiv.insertAdjacentElement('afterend', container);
@@ -162,7 +203,11 @@
         }
 
         try {
-            const buffer = await fetch(url).then(res => res.arrayBuffer());
+            const dlcResponse = await fetch(url);
+            if (!dlcResponse.ok) {
+                throw new Error(`DLC download returned HTTP ${dlcResponse.status}.`);
+            }
+            const buffer = await dlcResponse.arrayBuffer();
             const formData = new FormData();
             formData.append('link', window.location.href);
             formData.append('referrer', document.referrer || 'unknown');
@@ -170,17 +215,7 @@
             formData.append('size', size);
             formData.append('dlcfile', new Blob([buffer]), 'file.dlc');
 
-            const res = await fetch(UPLOAD_URL, {
-                method: 'POST',
-                body: formData,
-            });
-
-            const json = await res.json();
-            const { referrer, links } = json;
-
-            if (!links || !links.length) {
-                throw new Error('No links returned');
-            }
+            const { referrer, links } = await uploadDLC(formData);
 
             if (storageKey) {
                 try {
@@ -190,7 +225,7 @@
 
             renderLinks(links, referrer);
         } catch (err) {
-            linksDiv.innerText = 'Failed to fetch links';
+            linksDiv.innerText = `Failed to fetch links: ${err.message || 'Unknown error'}`;
             linksDiv.style.color = '#fc8181';
             linksDiv.style.fontStyle = 'normal';
             console.error(err);
@@ -236,9 +271,10 @@
             actionsDiv.style.display = 'flex';
             linksDiv.innerHTML = '';
 
-            links.forEach(linkItem => {
+            links.forEach((linkItem) => {
                 const row = document.createElement('div');
-                row.style = 'display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:4px;background:rgba(255,255,255,0.05);gap:10px;box-sizing:border-box;width:100%;';
+                row.style =
+                    'display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:4px;background:rgba(255,255,255,0.05);gap:10px;box-sizing:border-box;width:100%;';
                 row.onmouseenter = () => (row.style.background = 'rgba(255,255,255,0.1)');
                 row.onmouseleave = () => (row.style.background = 'rgba(255,255,255,0.05)');
 
@@ -246,10 +282,11 @@
                 a.href = '#';
                 a.innerText = linkItem;
                 a.title = linkItem;
-                a.style = 'display:block!important;visibility:visible!important;opacity:1!important;height:auto!important;max-width:calc(100% - 35px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#63b3ed!important;text-decoration:none!important;font-size:12px!important;font-family:monospace!important;cursor:pointer;line-height:1.5!important;text-align:left!important;';
+                a.style =
+                    'display:block!important;visibility:visible!important;opacity:1!important;height:auto!important;max-width:calc(100% - 35px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#63b3ed!important;text-decoration:none!important;font-size:12px!important;font-family:monospace!important;cursor:pointer;line-height:1.5!important;text-align:left!important;';
                 a.onmouseenter = () => (a.style.textDecoration = 'underline');
                 a.onmouseleave = () => (a.style.textDecoration = 'none');
-                a.onclick = e => {
+                a.onclick = (e) => {
                     e.preventDefault();
                     window.open(linkItem, '_blank');
                 };
@@ -263,7 +300,8 @@
                         <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                     </svg>
                 `;
-                itemCopy.style = 'flex-shrink:0;width:auto;height:auto;background:none;border:none;color:#a0aec0;cursor:pointer;padding:4px 6px;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0;';
+                itemCopy.style =
+                    'flex-shrink:0;width:auto;height:auto;background:none;border:none;color:#a0aec0;cursor:pointer;padding:4px 6px;border-radius:4px;display:flex;align-items:center;justify-content:center;margin:0;';
                 itemCopy.onmouseenter = () => (itemCopy.style.color = '#fff');
                 itemCopy.onmouseleave = () => (itemCopy.style.color = '#a0aec0');
                 itemCopy.onclick = (e) => {

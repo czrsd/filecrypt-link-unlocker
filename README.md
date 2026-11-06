@@ -8,6 +8,8 @@ The script uses a lightweight Node.js proxy server to decrypt `.dlc` files via t
 
 You can use the default public proxy configured in the script, or self-host your own instance by running `server.js` and updating the `UPLOAD_URL` constant.
 
+Uploads use the userscript manager's `GM_xmlhttpRequest` API so Filecrypt's page Content Security Policy cannot block the cross-origin request. Version 1.1.1 requires permission to connect to `filecrypt.czrsd.com`; approve that permission when updating. If you see a CSP-blocked upload, update or reinstall the userscript and reload the container page.
+
 ---
 
 ## Features
@@ -31,7 +33,7 @@ Extract plain-text links for all popular filehosters embedded in Filecrypt, incl
 1. Install a userscript manager such as [Tampermonkey](https://tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/) in your browser.
 2. Enable *Allow User Scripts* in your userscript manager's extension settings (required for Chrome Manifest V3).
 3. Install the script directly from Greasy Fork, or create a new script in your extension and paste the contents of `script.user.js`.
-4. *(Optional)* Update the `UPLOAD_URL` constant in the script if you are self-hosting the proxy server on your own domain.
+4. *(Optional)* Update the `UPLOAD_URL` constant and the `@connect` hostname in the script if you are self-hosting the proxy server on your own domain.
 
 ---
 
