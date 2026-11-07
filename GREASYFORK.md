@@ -16,7 +16,7 @@ Extract original download links from supported Filecrypt containers directly in 
 
 ## Supported pages and filehosters
 
-Configured for HTTPS container pages on Filecrypt `.cc`, `.to`, and `.co`, including subdomains. Actual extraction depends on each page’s available data; support for every container is not guaranteed.
+Configured for HTTPS container pages on Filecrypt `.cc`, `.to`, and `.co`, including subdomains. Actual extraction depends on each page's available data; support for every container is not guaranteed.
 
 Extracted URLs can point to Rapidgator, Ddownload, Mega, Mediafire, Datanodes, Filekeeper, Fuckingfast, and other hosts. The script returns links supplied by Filecrypt; it does not unlock premium downloads or bypass filehost restrictions.
 
@@ -33,10 +33,6 @@ Shortcuts work throughout the Filecrypt page, including when the panel is collap
 * **Shift-click:** Select or deselect a range of links.
 
 Shortcuts leave editable fields alone and use the current selection. Open **Keyboard shortcuts** beside **Export diagnostics** for a reminder.
-
-## Limitations
-
-Complete any CAPTCHA or password prompt on Filecrypt first. DLC-only containers cannot be decrypted by the script; their original DLC download is offered when available. Some individual redirects or security prompts require opening links manually. Partial results are labelled.
 
 ## Installation
 

@@ -54,17 +54,3 @@ Shortcuts work throughout the Filecrypt page, including when the panel is collap
 | Tab / Shift + Tab | Move between controls |
 
 Copy and export require at least one selected link. Holding a shortcut does not repeatedly copy or download files. The panel's **Keyboard shortcuts** disclosure lists the controls. Shift-click a checkbox to select or deselect a range.
-
-## Limits and troubleshooting
-
-**Not every container is extractable.** Complete CAPTCHA/password protection normally. Unsupported CNL key expressions are not evaluated. If selected-episode data is unavailable, the script does not substitute default-episode links.
-
-**DLC-only containers:** the script cannot decrypt DLC files. If extraction fails, it offers the original DLC download when available.
-
-**Individual redirects:** browsers can hide HTTP redirect destinations when automatic following is disabled. Those links, cross-domain Filecrypt transitions, security prompts, and unsupported layouts remain listed as unresolved links to open manually. Partial results are labelled and are not cached.
-
-**Missing or stale links:** complete page prompts and press Retry to bypass the cache. The script does not independently verify that destination files are online.
-
-**No panel:** confirm the script is enabled, the URL matches a supported HTTPS `/Container/` page, and the manager has site access. The panel appears as soon as the page body is available and watches for container content added later.
-
-**Report a problem:** Export diagnostics and attach the JSON to a [GitHub issue](https://github.com/czrsd/filecrypt-link-unlocker/issues). It contains the browser and script versions, selection state, detected structure counts, extraction method, timing, and error categories. It excludes cookies, IP addresses, container URLs, referrers, decrypted links, and CNL keys. Exporting downloads the report without submitting it. Share a container URL or sanitized HTML separately if needed.
