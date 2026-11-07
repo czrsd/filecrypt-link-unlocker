@@ -13,7 +13,7 @@ function checkedBuild(siteUrl) {
   assert.equal(result.status, 0, result.stderr || result.stdout);
   const html = readFileSync('dist/index.html', 'utf8');
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.ok(html.includes('Turn a FileCrypt DLC container'));
+  assert.ok(html.includes('Turn a FileCrypt container'));
   assert.equal((html.match(/<details\b/g) || []).length, 5);
   assert.ok(html.includes('Complete any CAPTCHA'));
   assert.ok(html.includes('data-nosnippet'));
@@ -28,7 +28,7 @@ function checkedBuild(siteUrl) {
   assert.doesNotMatch(html, /chatgpt\.site|appgprj_/);
   const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   assert.ok(schema['@graph'][0]['@type'].includes('SoftwareSourceCode'));
-  assert.equal(schema['@graph'][0].softwareVersion, JSON.parse(readFileSync('src/project.json', 'utf8')).version);
+  assert.equal(schema['@graph'][0].softwareVersion, readFileSync('../script.user.js', 'utf8').match(/^\/\/\s*@version\s+(\S+)/m)[1]);
   assert.ok(!schema['@graph'].some(item => item['@type'] === 'FAQPage' || item.aggregateRating));
   for (const [, fragment] of html.matchAll(/href="#([^"]+)"/g)) {
     assert.ok(html.includes(`id="${fragment}"`), `Broken section link #${fragment}`);

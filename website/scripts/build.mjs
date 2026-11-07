@@ -4,12 +4,8 @@ import sharp from 'sharp';
 import { minify } from 'html-minifier-terser';
 
 const env = { ...loadEnv('production', process.cwd(), ''), ...process.env };
-const project = JSON.parse(await readFile('src/project.json', 'utf8'));
 const userscript = await readFile('../script.user.js', 'utf8');
 const scriptVersion = userscript.match(/^\/\/\s*@version\s+(\S+)/m)?.[1];
-if (project.version !== scriptVersion) {
-  throw new Error('Update src/project.json to match the userscript version before building the website.');
-}
 let origin;
 if (env.SITE_URL?.trim()) {
   const siteUrl = new URL(env.SITE_URL.trim());
@@ -28,7 +24,7 @@ try {
   const app = {
     '@type': ['SoftwareApplication', 'SoftwareSourceCode'], '@id': appId,
     name: 'FileCrypt Link Unlocker', applicationCategory: 'UtilitiesApplication',
-    softwareVersion: project.version,
+    softwareVersion: scriptVersion,
     operatingSystem: 'Any with a compatible browser and userscript manager',
     description: 'A free FileCrypt userscript to extract container links, copy them individually or together, and export a TXT file.',
     ...(origin ? { url: `${origin}/`, image: `${origin}/filecrypt-link-unlocker.webp`, screenshot: `${origin}/filecrypt-preview.webp` } : {}),
@@ -36,7 +32,7 @@ try {
     codeRepository: 'https://github.com/czrsd/filecrypt-link-unlocker',
     license: 'https://github.com/czrsd/filecrypt-link-unlocker/blob/main/LICENSE',
     creator: { '@type': 'Person', name: 'Cursed', url: 'https://github.com/czrsd' },
-    featureList: ['Extract links from FileCrypt DLC containers', 'Copy individual links or the full list', 'Export links as a TXT file'],
+    featureList: ['Extract download links from FileCrypt containers', 'Copy individual links or the full list', 'Export links as a TXT file'],
     isAccessibleForFree: true,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   };
@@ -44,7 +40,7 @@ try {
     '@context': 'https://schema.org',
     '@graph': [app, ...(origin ? [
       { '@type': 'WebSite', '@id': `${origin}/#website`, url: `${origin}/`, name: 'FileCrypt Link Unlocker', inLanguage: 'en' },
-      { '@type': 'WebPage', '@id': `${origin}/#webpage`, url: `${origin}/`, name: 'FileCrypt Link Unlocker — DLC Link Extractor Userscript', inLanguage: 'en', isPartOf: { '@id': `${origin}/#website` }, mainEntity: { '@id': appId }, primaryImageOfPage: { '@type': 'ImageObject', url: `${origin}/social.png`, width: 1200, height: 630 } },
+      { '@type': 'WebPage', '@id': `${origin}/#webpage`, url: `${origin}/`, name: 'FileCrypt Link Unlocker — Container Link Extractor Userscript', inLanguage: 'en', isPartOf: { '@id': `${origin}/#website` }, mainEntity: { '@id': appId }, primaryImageOfPage: { '@type': 'ImageObject', url: `${origin}/social.png`, width: 1200, height: 630 } },
     ] : [])],
   };
   const safeOrigin = origin?.replaceAll('&', '&amp;').replaceAll('"', '&quot;');

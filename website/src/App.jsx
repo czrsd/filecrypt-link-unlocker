@@ -28,11 +28,11 @@ function ScreenshotPreview() {
 }
 
 const questions = [
-  ['Which FileCrypt domains are supported?', <>The userscript is configured for container pages on filecrypt.cc, filecrypt.to, filecrypt.co, filecrypt.org, and filecrypt.is.</>],
-  ['Can I extract Rapidgator or Ddownload links?', <>If those filehost links are included in the container’s DLC, they can appear in the extracted list. The same applies to other hosts included in that DLC. You still download from the original host.</>],
-  ['Does it bypass CAPTCHAs or passwords?', <>No. Complete any CAPTCHA or password prompt first. The script needs access to the container’s DLC download before it can extract the links.</>],
+  ['Which FileCrypt domains are supported?', <>The userscript is configured for container pages on filecrypt.cc, filecrypt.to, and filecrypt.co.</>],
+  ['Can I extract Rapidgator or Ddownload links?', <>If Filecrypt exposes those links through supported Click’n’Load data or link pages, they can appear in the list. You still download from the original host.</>],
+  ['Does it bypass CAPTCHAs or passwords?', <>No. Complete any CAPTCHA or password prompt first. The script needs access to the container’s supported link data. DLC-only containers cannot be decrypted by this script.</>],
   ['Does this unlock premium downloads?', <>No. You get the original filehost links. The host’s account requirements, download limits, and waiting times still apply.</>],
-  ['Nothing shows up. What should I check?', <>Check that your userscript manager and this script are enabled, then reload the container page. In Chrome, also check that the extension is allowed to run userscripts. The container needs an available DLC download. If it still fails, <a className="inline-link" href={`${REPO}/issues`}>report it on GitHub</a>.</>],
+  ['Nothing shows up. What should I check?', <>Check that your userscript manager and this script are enabled, then reload the container page. In Chrome, also check that the extension is allowed to run userscripts. Look for the panel near the buttons or floating at the bottom. Complete any page prompts, then use Retry. Export diagnostics if it still fails, and <a className="inline-link" href={`${REPO}/issues`}>report it on GitHub</a>.</>],
 ];
 
 export default function App() {
@@ -57,7 +57,7 @@ export default function App() {
         <section className="page-width grid items-center gap-12 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24" aria-labelledby="hero-title">
           <div className="hero-copy">
             <h1 id="hero-title" className="text-4xl font-semibold leading-tight sm:text-5xl">FileCrypt link extractor.<br /><span className="text-muted-foreground">Straight to your links.</span></h1>
-            <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">Turn a FileCrypt DLC container into a list of original download links, right on the page. Pick one link or grab the whole pack and get on with it.</p>
+            <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">Turn a FileCrypt container into a list of original download links, right on the page. Pick one link or grab the whole pack and get on with it.</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg" className="hero-cta"><a href={INSTALL}><Icon icon={Puzzle} />Install userscript</a></Button>
               <Button asChild variant="outline" size="lg" className="hero-cta"><a href={REPO}><Icon icon={Github} />View on GitHub</a></Button>
@@ -72,7 +72,7 @@ export default function App() {
           <div className="grid gap-9 sm:grid-cols-3 sm:gap-8">
             <article className="feature-item"><Icon icon={Copy} className="mb-4 size-6 text-primary" /><h3 className="font-semibold">Grab the whole lot.</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Copy every link in one go, then toss them into JDownloader. No copying one part at a time.</p></article>
             <article className="feature-item"><Icon icon={FileDown} className="mb-4 size-6 text-primary" /><h3 className="font-semibold">Save it for later.</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Export the links as a little .txt file. Handy to stash away for next time.</p></article>
-            <article className="feature-item"><Icon icon={MousePointer2} className="mb-4 size-6 text-primary" /><h3 className="font-semibold">It pops right up.</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Open a container with a DLC file and your links appear right there on the page.</p></article>
+            <article className="feature-item"><Icon icon={MousePointer2} className="mb-4 size-6 text-primary" /><h3 className="font-semibold">It pops right up.</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">Compatible containers show their links on the page. If the normal button area is missing, the panel floats at the bottom.</p></article>
           </div>
         </section>
 
