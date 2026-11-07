@@ -1,15 +1,13 @@
 {
     "name": "filecryptbypass",
-    "version": "1.0.0",
-    "description": "",
-    "main": "server.js",
+    "version": "2.0.0",
+    "description": "Filecrypt link extraction in the browser",
     "scripts": {
-        "test": "node --test",
         "start": "node server.js"
     },
     "keywords": [],
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "type": "module",
     "dependencies": {
         "cors": "^2.8.5",
